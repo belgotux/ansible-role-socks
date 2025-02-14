@@ -1,0 +1,32 @@
+#!/bin/bash
+
+function start {
+    iptables -t nat -N SSH_REDIRECT && \
+    iptables -t nat -A PREROUTING -j SSH_REDIRECT -m comment --comment "proxy_second_ports" && \
+    {% for item in proxy_second_ports_ssh %}
+    iptables -t nat -A SSH_REDIRECT -i {{proxy_public_interface}} -p tcp --dport {{item}} -j DNAT --to-destination {{public_ip.stdout}}:22 && \
+    {% endfor %}
+    echo Service started
+    return $?
+}
+
+function stop {
+    line_to_remove=$(iptables -nL --line-numbers -t nat | egrep '\/\* proxy_second_ports \*\/$' | awk '{print $1}' 2>/dev/null)
+    iptables -t nat --flush SSH_REDIRECT && \
+    iptables -t nat -D PREROUTING $line_to_remove && \
+    iptables -t nat -X SSH_REDIRECT && \
+    echo Service stopped
+    return $?
+}
+
+
+if [ $# != 1 ] ; then
+	echo "Error : only one argument needed : start or stop" 1>&2
+	exit 1
+fi
+
+if [ $1 == "start" ] ; then start
+elif [ $1 == "stop" ] ; then stop
+else "echo : only start or stop in arg" && exit 2 ; fi
+
+exit $?

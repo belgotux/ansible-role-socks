@@ -1,0 +1,53 @@
+internal: 0.0.0.0 port={{proxy_socks_port}}
+external : {{proxy_public_interface}}
+#socksmethod: username none
+socksmethod: username
+user.privileged: root
+user.unprivileged: nobody
+user.libwrap: nobody
+
+# allow everyone from everywhere so long as they auth, log errors
+
+#client pass {
+#    from: AAA.AAA.AAA.AAA/24 port 1-65535 to: 0.0.0.0/0
+#    log: error # connect disconnect iooperation
+#    socksmethod: none username
+#}
+
+client pass {
+    from: 0.0.0.0/0 to: 0.0.0.0/0
+    log: error # connect disconnect iooperation
+    socksmethod: username
+}
+
+client block {
+        from: 0.0.0.0/0 to: 0.0.0.0/0
+        log: connect error
+}
+
+# allow everyone from everywhere so long as they auth, log errors
+
+socks block {
+        from: 0.0.0.0/0 to: lo0
+        log: connect error
+}
+
+socks block {
+        from: 0.0.0.0/0 to: 0.0.0.0/0
+        command: bind
+        log: connect error
+}
+
+#socks pass {
+#    from: AAA.AAA.AAA.AAA/24 port 1-65335 to: 0.0.0.0/0
+#    command: bind connect udpassociate
+#    log: error # connect disconnect iooperation
+#    socksmethod: none username
+#}
+
+socks pass {
+    from: 0.0.0.0/0 to: 0.0.0.0/0
+    command: bind connect udpassociate
+    log: error # connect disconnect iooperation
+    socksmethod: username
+}

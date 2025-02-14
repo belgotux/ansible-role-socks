@@ -1,0 +1,40 @@
+---
+# tasks file for proxy
+
+- name: install danted
+  apt:
+    pkg:
+      - dante-server
+    state: latest
+    update_cache: yes
+- name: copy config file
+  template:
+    src: danted.conf.j2
+    dest: /etc/danted.conf
+  notify: restart danted
+#TODO possibility password direct via vault
+- name: create proxy socks users
+  user:
+    name: "{{item.name}}"
+    password: "{{item.passhash}}"
+    state: present
+    shell: /bin/false
+    groups: users
+    system: yes
+  loop: "{{proxy_socks_users}}"
+
+- name: Get public IP
+  shell: "ip a show {{proxy_public_interface}} | egrep '^ *inet ' | awk '{printf substr($2, 1, length($2)-3)}'"
+  register: public_ip
+  changed_when: false
+- name: copy script ssh-redirect
+  template:
+    src: "iptables-ssh.sh.j2"
+    dest: "{{proxy_ssh_script}}"
+    mode: '0755'
+  notify: apply ssh iptables rules
+- name: copy service file ssh-redirect
+  template:
+    src: "iptables-ssh-redirect.service.j2"
+    dest: /etc/systemd/system/ssh-redirect.service
+  notify: apply ssh iptables rules

@@ -1,0 +1,25 @@
+galaxy_info:
+  role_name: proxy_socks
+  author: belgotux
+  description: Install danted and add some iptables ssh open ports
+  license: GPL-3.0-or-later
+
+  min_ansible_version: "2.1"
+
+  platforms:
+  - name: Ubuntu
+    versions:
+    - focal
+    - jammy
+    - noble
+  - name: Debian
+    versions:
+    - bookworm
+    - bullseye
+
+  galaxy_tags:
+  - proxy
+  - socks
+  - ssh
+
+dependencies: []

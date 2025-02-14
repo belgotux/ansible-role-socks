@@ -1,0 +1,18 @@
+---
+# handlers file for proxy
+- name: apply ssh iptables rules
+  systemd:
+    name: ssh-redirect.service
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+  retries: 2
+  delay: 3
+  register: result
+  until: result is not failed
+
+- name: restart danted
+  systemd:
+    name: danted
+    state: restarted
+    enabled: yes
