@@ -11,3 +11,4 @@ proxy_second_ports_ssh:
   - 2222
   - 465
 proxy_public_interface: eth0
+proxy_ufw: false

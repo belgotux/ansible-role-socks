@@ -38,3 +38,9 @@
     src: "iptables-ssh-redirect.service.j2"
     dest: /etc/systemd/system/ssh-redirect.service
   notify: apply ssh iptables rules
+  
+- name: allow port {{ proxy_socks_port }} in UFW
+  ufw:
+    rule: allow
+    port: '{{ proxy_socks_port }}'
+  when: proxy_ufw

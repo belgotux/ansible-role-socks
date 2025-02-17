@@ -22,6 +22,7 @@ Role Variables
 - `proxy_ssh_script`: location for the startup script (default `/usr/local/sbin/iptables-ssh.sh`)
 - `proxy_second_ports_ssh`: list of ports redirect to SSH original port (default [2222,465])
 - `proxy_public_interface`: public interface to listen for second ports ssh (default `eth0`)
+- `proxy_ufw`: indicate if ufw rule need to be add (default `false`)
 
 Example Playbook
 ----------------
@@ -45,6 +46,7 @@ Example Playbook
             passhash: $y$yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
           - name: user2
             passhash: $y$yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+        proxy_ufw: true
 ```
 
 License
