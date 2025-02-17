@@ -1,19 +1,19 @@
 [Unit]
-Description=Redirect ports {{proxy_second_ports_ssh|join(',')}} to SSH service
+Description=Redirect ports {{proxy_socks_second_ports_ssh|join(',')}} to SSH service
 After=network.target
 
 [Service]
 User=root
 Group=root
 Type=oneshot 
-RemainAfterExit=yes
+RemainAfterExit=true
 
 [Service]
 User=root
 Group=root
-WorkingDirectory={{proxy_ssh_script|dirname}}
-ExecStart={{proxy_ssh_script}} start
-ExecStop={{proxy_ssh_script}} stop
+WorkingDirectory={{proxy_socks_ssh_script|dirname}}
+ExecStart={{proxy_socks_ssh_script}} start
+ExecStop={{proxy_socks_ssh_script}} stop
 
 [Install]
 WantedBy=multi-user.target

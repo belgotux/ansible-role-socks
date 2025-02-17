@@ -18,11 +18,11 @@ Role Variables
   - name: default_user_proxy_socks
     passhash: $y$yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 ```
-- `port_ssh` : original port of the ssh service (default `22`)
-- `proxy_ssh_script`: location for the startup script (default `/usr/local/sbin/iptables-ssh.sh`)
-- `proxy_second_ports_ssh`: list of ports redirect to SSH original port (default [2222,465])
-- `proxy_public_interface`: public interface to listen for second ports ssh (default `eth0`)
-- `proxy_ufw`: indicate if ufw rule need to be add (default `false`)
+- `proxy_socks_port_ssh` : original port of the ssh service (default `22`)
+- `proxy_socks_ssh_script`: location for the startup script (default `/usr/local/sbin/iptables-ssh.sh`)
+- `proxy_socks_second_ports_ssh`: list of ports redirect to SSH original port (default [2222,465])
+- `proxy_socks_public_interface`: public interface to listen for second ports ssh (default `eth0`)
+- `proxy_socks_ufw`: indicate if ufw rule need to be add (default `false`)
 
 Example Playbook
 ----------------
@@ -32,10 +32,10 @@ Example Playbook
 
   roles:
     - role: socks
-      become: yes
+      become: true
       vars: 
-        proxy_public_interface: enp0s8
-        proxy_second_ports_ssh:
+        proxy_socks_public_interface: enp0s8
+        proxy_socks_second_ports_ssh:
           - 2222
           - 143
           - 465
@@ -46,7 +46,7 @@ Example Playbook
             passhash: $y$yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
           - name: user2
             passhash: $y$yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
-        proxy_ufw: true
+        proxy_socks_ufw: true
 ```
 
 License

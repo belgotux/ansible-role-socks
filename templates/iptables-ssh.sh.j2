@@ -3,8 +3,8 @@
 function start {
     iptables -t nat -N SSH_REDIRECT && \
     iptables -t nat -A PREROUTING -j SSH_REDIRECT -m comment --comment "proxy_second_ports" && \
-    {% for item in proxy_second_ports_ssh %}
-    iptables -t nat -A SSH_REDIRECT -i {{proxy_public_interface}} -p tcp --dport {{item}} -j DNAT --to-destination {{public_ip.stdout}}:22 && \
+    {% for item in proxy_socks_second_ports_ssh %}
+    iptables -t nat -A SSH_REDIRECT -i {{proxy_socks_public_interface}} -p tcp --dport {{item}} -j DNAT --to-destination {{public_ip.stdout}}:22 && \
     {% endfor %}
     echo Service started
     return $?

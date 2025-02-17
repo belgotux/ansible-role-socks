@@ -5,10 +5,10 @@ proxy_socks_port:
 proxy_socks_users:
   - name: default_user_proxy_socks
     passhash: $y$yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
-port_ssh: 22
-proxy_ssh_script: /usr/local/sbin/iptables-ssh.sh
-proxy_second_ports_ssh:
+proxy_socks_port_ssh: 22
+proxy_socks_ssh_script: /usr/local/sbin/iptables-ssh.sh
+proxy_socks_second_ports_ssh:
   - 2222
   - 465
-proxy_public_interface: eth0
-proxy_ufw: false
+proxy_socks_public_interface: eth0
+proxy_socks_ufw: false

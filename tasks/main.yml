@@ -1,46 +1,50 @@
 ---
 # tasks file for proxy
 
-- name: install danted
+- name: Install danted
   apt:
     pkg:
       - dante-server
-    state: latest
-    update_cache: yes
-- name: copy config file
+    state: present
+    update_cache: true
+- name: Copy config file
   template:
     src: danted.conf.j2
     dest: /etc/danted.conf
-  notify: restart danted
-#TODO possibility password direct via vault
-- name: create proxy socks users
+    mode: '0644'
+  notify: Restart danted
+# TODO possibility password direct with vault
+- name: Create proxy socks users
   user:
-    name: "{{item.name}}"
-    password: "{{item.passhash}}"
+    name: '{{ item.name }}'
+    password: '{{ item.passhash }}'
     state: present
     shell: /bin/false
     groups: users
-    system: yes
-  loop: "{{proxy_socks_users}}"
+    system: true
+  loop: '{{ proxy_socks_users }}'
 
 - name: Get public IP
-  shell: "ip a show {{proxy_public_interface}} | egrep '^ *inet ' | awk '{printf substr($2, 1, length($2)-3)}'"
+  shell: |
+    set -o pipefail
+    ip a show {{ proxy_socks_public_interface }} | egrep '^ *inet ' | awk '{printf substr($2, 1, length($2)-3)}'
   register: public_ip
   changed_when: false
-- name: copy script ssh-redirect
+- name: Copy script ssh-redirect
   template:
-    src: "iptables-ssh.sh.j2"
-    dest: "{{proxy_ssh_script}}"
+    src: iptables-ssh.sh.j2
+    dest: '{{ proxy_socks_ssh_script }}'
     mode: '0755'
-  notify: apply ssh iptables rules
-- name: copy service file ssh-redirect
+  notify: Apply ssh iptables rules
+- name: Copy service file ssh-redirect
   template:
-    src: "iptables-ssh-redirect.service.j2"
+    src: iptables-ssh-redirect.service.j2
     dest: /etc/systemd/system/ssh-redirect.service
-  notify: apply ssh iptables rules
-  
-- name: allow port {{ proxy_socks_port }} in UFW
+    mode: '0644'
+  notify: Apply ssh iptables rules
+
+- name: Allow port in UFW {{ proxy_socks_port }}
   ufw:
     rule: allow
     port: '{{ proxy_socks_port }}'
-  when: proxy_ufw
+  when: proxy_socks_ufw
