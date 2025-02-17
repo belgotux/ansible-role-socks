@@ -25,9 +25,7 @@
   loop: '{{ proxy_socks_users }}'
 
 - name: Get public IP
-  shell: |
-    set -o pipefail
-    ip a show {{ proxy_socks_public_interface }} | egrep '^ *inet ' | awk '{printf substr($2, 1, length($2)-3)}'
+  shell: "ip a show {{ proxy_socks_public_interface }} | egrep '^ *inet ' | awk '{printf substr($2, 1, length($2)-3)}'"
   register: public_ip
   changed_when: false
 - name: Copy script ssh-redirect
